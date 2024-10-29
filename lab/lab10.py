@@ -43,18 +43,36 @@ print(re.findall(r'\w*?\d', 'abc123def456ghi')) # '?' character after '*' makes 
 
 
 print()
+print("Task 1 & 2\n")
 mtxt = 'jox r.nohre@jth.hj.se, bjox@se, adam@example.com, jox@jox@jox.com.'
 print(re.findall(r'\w+@\w+', mtxt)) # extract words that contains @
-print(re.findall(r'\w+@\w+\.\w+', mtxt)) # extract emails that contains only one @ in the word
+print(re.findall(r'\w+@\w+\.\w+', mtxt)) # extract emails
 # extract emails that does not contain multiple @ in the same word
-print(re.findall(r"\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b(?![^\s]*@)", mtxt))
+print(re.findall(r"(?=[^\s]*@.*@)([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})", mtxt))
 
 
 
 print()
-
+print("Task 3\n")
 f = open("lab-deliverables\\tabla.html", encoding='utf-8')
 txt = f.read()
 
-print(re.findall(r'<td class="svtTablaTime">\s*(\d+\.\d+)\s*</td>\s*<td.*?>\s*<h4.*?>\s*Simpsons\s*</h4>', txt))
-print(re.findall(r'<p class="svtXMargin-Bottom-10px">\s*(\w+)</p>', txt))
+#1: quite shit one
+# https://regex101.com/r/UwJKVN/1
+print(re.findall(r'<td class="svtTablaTime">\s*(\d+\.\d+)\s*<\/td>\s*<td.*?>\s*<h4.*?>\s*Simpsons\s*<\/h4>\s*<div class="svtJsStopPropagation">\s*<div class="svtTablaTitleInfo svtHide-Js">\s*<div class="svtTablaContent-Description">\s*<p class="svtXMargin-Bottom-10px">\s.*?\.\s(Säsong\s\d+).\s(Del\s\d+\sav\s\d+).\s(.*?\.)', txt))
+# https://regex101.com/r/jUpTk6/1
+print(re.findall(r'<td class="svtTablaTime">\s*(\d+\.\d+)\s*<\/td>\s*<td.*?>\s*<h4.*?>\s*Simpsons\s*<\/h4>\s*<div class="svtJsStopPropagation">\s*<div class="svtTablaTitleInfo svtHide-Js">\s*<div class="svtTablaContent-Description">\s*<p class="svtXMargin-Bottom-10px">\s.*?\.\s(Säsong\s\d+).\s(Del\s\d+\sav\s\d+).\s(Bob\s+återvänder.*?)(?=Simpsons bor)',txt))
+
+#2: hail mary?
+# https://regex101.com/r/Z8KjwH/1
+data = re.findall(r'<td class="svtTablaTime">\s*(\d+\.\d+)\s*<\/td>\s*<td.*?>\s*<h4.*?>\s*Simpsons\s*<\/h4>\s*<div class="svtJsStopPropagation">\s*<div class="svtTablaTitleInfo svtHide-Js">\s*<div class="svtTablaContent-Description">\s*<p class="svtXMargin-Bottom-10px">\s.*?\.\s(Säsong\s\d+).\s(Del\s\d+\sav\s\d+).\s(.*?)\s(?=Regi)(.*?\.)', txt)
+for d in data:
+    date_format = d[2].split(" ")
+    season = d[1]
+    season = season[:6] + ":" + season[6:]
+    print("--------------------")
+    print(f'Tid:\t{d[0]}')
+    print(f'{season}')
+    print(f'Avsnitt:{date_format[1]}/{date_format[3]}')
+    print(f'Handling: {d[3]}')
+    print()
